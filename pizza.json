@@ -1,0 +1,114 @@
+{
+  "name": "PizzaCode — Aula 1 (Webhook Chatbot)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9c5a8486-0338-472a-81b6-8f4561279869",
+      "name": "Webhook  POST /chat",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "9dfaaad6-d4ba-4945-9e73-523e64433c3d"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Você é o Zeca, atendente simpático da PizzaCode. Responda curto, em português, e ajude com o cardápio e pedidos.\" },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.body.mensagem) }} }\n  ]\n}",
+        "options": {}
+      },
+      "id": "2d2fdfb9-df8d-4d8e-ab74-dffe68fc920e",
+      "name": "Chamar o LLM (Groq)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.choices[0].message.content }}",
+        "options": {}
+      },
+      "id": "ab99c199-9508-4f07-b0be-84427c751c06",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        540,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Aula 1 — Chatbot no ar\n1. Ative o workflow (toggle no topo).\n2. Copie a **Production URL** do nó Webhook.\n3. Teste com o `cliente_chat.html` ou:\n`curl -X POST <url> -d '{\"mensagem\":\"tem pizza vegana?\"}'`\n\n⚙️ No nó *Chamar o LLM*: crie uma credencial **Header Auth** (Name: `Authorization`, Value: `Bearer SUA_CHAVE_GROQ`).",
+        "height": 220,
+        "width": 620,
+        "color": 5
+      },
+      "id": "b86de1c7-48f8-4729-883c-075c47ec1b09",
+      "name": "Sticky Note df23",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -260
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook  POST /chat": {
+      "main": [
+        [
+          {
+            "node": "Chamar o LLM (Groq)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar o LLM (Groq)": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
