@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PizzaCode — Biblioteca da Comunidade</title>
+    <title>Livraria Saberes - Converse com a Sophia</title>
     <link rel="stylesheet" href="styles.css">
     <script src="config.js"></script>
 </head>
@@ -12,186 +12,56 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1 class="title">📚 PizzaCode</h1>
-                <p class="subtitle">Biblioteca da Comunidade de Desenvolvimento</p>
+                <h1 class="title">📚 Livraria Saberes</h1>
+                <p class="subtitle">Converse com Sophia, sua assistente virtual</p>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="sidebar-card">
-                    <h2 class="sidebar-title">ℹ️ Sobre</h2>
-                    <p>Bem-vindo à biblioteca do PizzaCode! Aqui você encontra informações sobre nosso projeto e workflow de desenvolvimento.</p>
-                </div>
-
-                <div class="sidebar-card">
-                    <h2 class="sidebar-title">🚀 Status</h2>
-                    <p><strong>Workflow:</strong> Aula 1 — Chatbot</p>
-                    <p><strong>Status:</strong> Ativo</p>
-                </div>
-            </aside>
-
-            <!-- Content Area -->
-            <div class="content">
-                <!-- Welcome Section -->
-                <section class="section welcome-section">
-                    <h2 class="section-title">Bem-vindo ao PizzaCode</h2>
-                    <p class="welcome-text">
-                        Este é um projeto educacional que demonstra como construir um chatbot usando n8n e a API Groq.
-                        Uma iniciativa da comunidade de desenvolvimento.
-                    </p>
-                </section>
-
-                <!-- Project Info Card -->
-                <section class="section">
-                    <div class="card large-card">
-                        <div class="card-header">
-                            <h3 class="card-title">📖 Projeto: Aula 1 — Webhook Chatbot</h3>
-                            <span class="badge">Educacional</span>
-                        </div>
-                        <div class="card-content">
-                            <p>Um chatbot simples que atende pedidos de pizza usando inteligência artificial.</p>
-                            <h4>Como funciona:</h4>
-                            <ol>
-                                <li>Você envia uma mensagem via webhook POST</li>
-                                <li>O workflow encaminha para a API Groq (LLaMA 3.3)</li>
-                                <li>O LLM responde como o "Zeca", atendente da PizzaCode</li>
-                                <li>A resposta é retornada imediatamente</li>
-                            </ol>
+            <!-- Chat Section - Full Width -->
+            <section class="chat-section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="sophia-status">
+                            <span class="online-indicator"></span>
+                            <span>Sophia está online</span>
                         </div>
                     </div>
-                </section>
-
-                <!-- Technology Stack -->
-                <section class="section">
-                    <h2 class="section-title">🛠️ Stack Tecnológico</h2>
-                    <div class="tech-grid">
-                        <div class="tech-card">
-                            <div class="tech-icon">🔗</div>
-                            <h3>n8n</h3>
-                            <p>Orquestração de fluxos de trabalho</p>
-                        </div>
-                        <div class="tech-card">
-                            <div class="tech-icon">🤖</div>
-                            <h3>Groq API</h3>
-                            <p>LLM LLaMA 3.3 70B</p>
-                        </div>
-                        <div class="tech-card">
-                            <div class="tech-icon">⚙️</div>
-                            <h3>Webhook</h3>
-                            <p>Comunicação HTTP POST</p>
-                        </div>
-                        <div class="tech-card">
-                            <div class="tech-icon">🌐</div>
-                            <h3>Deploy</h3>
-                            <p>Render / Vercel / GitHub Pages</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Nodes Documentation -->
-                <section class="section">
-                    <h2 class="section-title">🔧 Componentes do Workflow</h2>
-                    <div class="nodes-container">
-                        <div class="node-card">
-                            <h3 class="node-title">1️⃣ Webhook POST /chat</h3>
-                            <div class="node-details">
-                                <p><strong>Tipo:</strong> Entrada</p>
-                                <p><strong>Método:</strong> POST</p>
-                                <p><strong>Path:</strong> /chat</p>
-                                <p><strong>Função:</strong> Recebe mensagens de texto do usuário</p>
-                            </div>
-                        </div>
-
-                        <div class="node-card">
-                            <h3 class="node-title">2️⃣ Chamar o LLM (Groq)</h3>
-                            <div class="node-details">
-                                <p><strong>Tipo:</strong> HTTP Request</p>
-                                <p><strong>URL:</strong> api.groq.com/openai/v1/chat/completions</p>
-                                <p><strong>Modelo:</strong> llama-3.3-70b-versatile</p>
-                                <p><strong>Função:</strong> Envia a mensagem para o LLM processar</p>
-                            </div>
-                        </div>
-
-                        <div class="node-card">
-                            <h3 class="node-title">3️⃣ Responder</h3>
-                            <div class="node-details">
-                                <p><strong>Tipo:</strong> Saída</p>
-                                <p><strong>Método:</strong> Webhook Response</p>
-                                <p><strong>Função:</strong> Retorna a resposta do LLM</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Chat Section -->
-                <section class="section chat-section">
-                    <h2 class="section-title">💬 Teste o Chatbot Agora</h2>
-                    <div class="chat-container">
-                        <div class="chat-box">
-                            <div class="chat-messages" id="chatMessages">
-                                <div class="message system-message">
-                                    <p>👋 Olá! Sou o Zeca, atendente do PizzaCode. Como posso ajudar?</p>
+                    
+                    <div class="chat-box">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message system-message">
+                                <div class="message-avatar">📚</div>
+                                <div class="message-content">
+                                    <p><strong>Sophia:</strong> Olá! Bem-vindo à Livraria Saberes. Sou a Sophia, sua assistente virtual. Posso ajudá-lo com recomendações de livros, informações sobre gêneros literários, autores e tudo que você precisar. Como posso começar? 😊</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="chat-input-area">
-                            <input 
-                                type="text" 
-                                id="messageInput" 
-                                class="chat-input" 
-                                placeholder="Digite sua mensagem aqui..."
-                                maxlength="500"
-                            >
-                            <button id="sendBtn" class="chat-send-btn">
-                                Enviar
-                            </button>
-                        </div>
-                        <p class="chat-status" id="chatStatus"></p>
                     </div>
-                </section>
-
-                <!-- Instructions -->
-                <section class="section instructions-section">
-                    <h2 class="section-title">📋 Como Usar</h2>
-                    <div class="instruction-box">
-                        <h3>Passos para começar:</h3>
-                        <ol>
-                            <li>Acesse sua instância n8n</li>
-                            <li>Importe o workflow (pizza.json)</li>
-                            <li>Configure sua chave da API Groq no nó "Chamar o LLM"</li>
-                            <li>Ative o workflow (toggle no topo)</li>
-                            <li>Copie a URL de produção do webhook</li>
-                            <li>Teste usando o chatbot acima! ☝️</li>
-                        </ol>
+                    
+                    <div class="chat-input-area">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            class="chat-input" 
+                            placeholder="Pergunte sobre livros, autores, recomendações..."
+                            maxlength="500"
+                            autocomplete="off"
+                        >
+                        <button id="sendBtn" class="chat-send-btn" title="Enviar mensagem (Enter)">
+                            ➤
+                        </button>
                     </div>
-                </section>
-
-                <!-- Footer Info -->
-                <section class="section footer-info">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <h4>📚 Documentação</h4>
-                            <p>Aprenda mais sobre n8n, webhooks e integração com LLMs.</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>💻 Código Aberto</h4>
-                            <p>Este projeto é educacional e de código aberto para a comunidade.</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>🎓 Aprendizado</h4>
-                            <p>Perfeito para entender fluxos de trabalho e APIs em tempo real.</p>
-                        </div>
-                    </div>
-                </section>
-            </div>
+                    
+                    <p class="chat-status" id="chatStatus"></p>
+                </div>
+            </section>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>&copy; 2024 PizzaCode Community. Educação em Desenvolvimento.</p>
+            <p>Livraria Saberes © 2024 | Powered by Sophia AI</p>
         </footer>
     </div>
 

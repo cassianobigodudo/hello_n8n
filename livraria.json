@@ -35,7 +35,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Você é o Zeca, atendente simpático da PizzaCode. Responda curto, em português, e ajude com o cardápio e pedidos.\" },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.body.mensagem) }} }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Você é a Sophia, assistente virtual inteligente e acolhedora da Livraria Saberes. Sua missão é ajudar os leitores a encontrarem livros, responder dúvidas sobre recomendações de leitura, gêneros literários, autores, horários de funcionamento e eventos da livraria.\n\nDiretrizes de resposta:\n1. Seja sempre simpática, culta e prestativa.\n2. Se o cliente pedir recomendações de leitura, sugira 2 a 3 títulos com uma breve justificativa inspiradora.\n3. Responda de forma clara e objetiva em português do Brasil.\n4. Caso não saiba algo específico sobre o estoque em tempo real, convide o leitor a visitar a loja física ou falar com um de nossos atendentes.\" },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.body.mensagem) }} }\n  ]\n}",
         "options": {}
       },
       "id": "2d2fdfb9-df8d-4d8e-ab74-dffe68fc920e",

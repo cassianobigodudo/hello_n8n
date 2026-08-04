@@ -1,77 +1,5 @@
-// ===== Smooth Scroll Behavior =====
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
-
-// ===== Add Animation on Scroll =====
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-            observer.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
-// Observe cards and sections
-document.querySelectorAll('.card, .section, .tech-card, .node-card, .sidebar-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'all 0.6s ease-out';
-    observer.observe(el);
-});
-
-// ===== Add Interactive Effects =====
-document.querySelectorAll('.card, .tech-card, .node-card, .sidebar-card, .info-item').forEach(el => {
-    el.addEventListener('mouseenter', function() {
-        this.style.cursor = 'pointer';
-    });
-});
-
-// ===== Keyboard Navigation =====
-document.addEventListener('keydown', (e) => {
-    // Press 'T' to go to top
-    if (e.key === 't' || e.key === 'T') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    // Press 'B' to go to bottom
-    if (e.key === 'b' || e.key === 'B') {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-});
-
-// ===== Page Load Animation =====
-window.addEventListener('load', () => {
-    document.body.style.opacity = '1';
-    document.body.style.transition = 'opacity 0.5s ease-in';
-});
-
-// ===== Accessibility: Focus Management =====
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        // Remove focus from any focused element
-        document.activeElement.blur();
-    }
-});
-
-// ===== Dynamic Content from pizza.json =====
+// ===== Initialize on DOM Load =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch and display info from pizza.json if available
-    loadProjectInfo();
-    
-    // Initialize chat
     initializeChat();
 });
 
@@ -81,11 +9,15 @@ function initializeChat() {
     const sendBtn = document.getElementById('sendBtn');
     const chatMessages = document.getElementById('chatMessages');
     const chatStatus = document.getElementById('chatStatus');
+    const chatBox = document.querySelector('.chat-box');
     
     if (!messageInput || !sendBtn) {
-        console.log('ℹ️ Chat não configurado na página');
+        console.error('Chat elements not found');
         return;
     }
+    
+    // Focus input on load
+    messageInput.focus();
     
     // Send message on button click
     sendBtn.addEventListener('click', () => {
@@ -93,6 +25,7 @@ function initializeChat() {
         if (message) {
             sendMessage(message);
             messageInput.value = '';
+            messageInput.focus();
         }
     });
     
@@ -108,20 +41,48 @@ function initializeChat() {
         }
     });
     
+    // Auto-focus input when clicking chat area
+    chatBox.addEventListener('click', () => {
+        messageInput.focus();
+    });
+    
     async function sendMessage(message) {
         // Show user message
         const userDiv = document.createElement('div');
         userDiv.className = 'message user-message';
-        userDiv.textContent = message;
+        userDiv.innerHTML = `
+            <div class="message-content">
+                <p>${escapeHtml(message)}</p>
+            </div>
+            <div class="message-avatar">👤</div>
+        `;
         chatMessages.appendChild(userDiv);
         
         // Scroll to bottom
-        chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+        chatBox.scrollTop = chatBox.scrollHeight;
         
         // Disable send button
         sendBtn.disabled = true;
-        chatStatus.textContent = CONFIG.LOADING_MESSAGE;
+        messageInput.disabled = true;
+        chatStatus.textContent = 'Sophia está digitando...';
         chatStatus.className = '';
+        
+        // Show loading indicator
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message system-message';
+        loadingDiv.id = 'loading-message';
+        loadingDiv.innerHTML = `
+            <div class="message-avatar">📚</div>
+            <div class="message-content">
+                <div class="loading-indicator">
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                </div>
+            </div>
+        `;
+        chatMessages.appendChild(loadingDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
         
         try {
             // Send to webhook
@@ -140,125 +101,71 @@ function initializeChat() {
             
             const text = await response.text();
             
+            // Remove loading indicator
+            loadingDiv.remove();
+            
             // Show bot response
             const botDiv = document.createElement('div');
             botDiv.className = 'message system-message';
-            botDiv.innerHTML = `<p>${text}</p>`;
+            botDiv.innerHTML = `
+                <div class="message-avatar">📚</div>
+                <div class="message-content">
+                    <p><strong>Sophia:</strong> ${escapeHtml(text)}</p>
+                </div>
+            `;
             chatMessages.appendChild(botDiv);
             
-            chatStatus.textContent = '✓ Mensagem entregue';
+            chatStatus.textContent = '✓';
             chatStatus.className = 'success';
+            
+            // Clear status after 2 seconds
+            setTimeout(() => {
+                chatStatus.textContent = '';
+            }, 2000);
             
         } catch (error) {
             console.error('Erro ao enviar mensagem:', error);
             
+            // Remove loading indicator
+            loadingDiv.remove();
+            
             // Show error message
             const errorDiv = document.createElement('div');
             errorDiv.className = 'message system-message';
-            errorDiv.innerHTML = `<p>❌ ${CONFIG.ERROR_MESSAGE}</p>`;
+            errorDiv.innerHTML = `
+                <div class="message-avatar">📚</div>
+                <div class="message-content">
+                    <p><strong>Sophia:</strong> Desculpe, tive um problema para responder. Pode tentar novamente?</p>
+                </div>
+            `;
             chatMessages.appendChild(errorDiv);
             
-            chatStatus.textContent = '✗ Erro ao enviar mensagem';
+            chatStatus.textContent = '✗ Erro ao enviar';
             chatStatus.className = 'error';
         } finally {
             sendBtn.disabled = false;
+            messageInput.disabled = false;
+            
             // Scroll to bottom
-            chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 100);
+            
             messageInput.focus();
         }
     }
 }
 
-async function loadProjectInfo() {
-    try {
-        const response = await fetch('pizza.json');
-        if (!response.ok) throw new Error('Could not load pizza.json');
-        
-        const data = await response.json();
-        
-        // Update project title if available
-        if (data.name) {
-            const projectTitle = document.querySelector('.section-title');
-            if (projectTitle && !projectTitle.textContent.includes('Componentes')) {
-                // Already showing project info, don't override
-            }
-        }
-        
-        console.log('✅ Project info loaded from pizza.json');
-        console.log('Project:', data.name);
-        console.log('Nodes:', data.nodes.length);
-        console.log('Status:', data.active ? 'Ativo' : 'Inativo');
-        
-    } catch (error) {
-        console.log('ℹ️ pizza.json não encontrado - página está funcionando com conteúdo estático');
-    }
+// ===== Utility: Escape HTML =====
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
-// ===== Utility: Copy to Clipboard =====
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        console.log('✅ Copiado para área de transferência!');
-    }).catch(err => {
-        console.error('❌ Erro ao copiar:', err);
-    });
-}
-
-// ===== Scroll to Top Button (Hidden by Default) =====
-const scrollToTopBtn = document.createElement('button');
-scrollToTopBtn.innerHTML = '↑ Topo';
-scrollToTopBtn.style.cssText = `
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    padding: 12px 20px;
-    background: #d4521f;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 999;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-`;
-
-document.body.appendChild(scrollToTopBtn);
-
-window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-        scrollToTopBtn.style.opacity = '1';
-        scrollToTopBtn.style.visibility = 'visible';
-    } else {
-        scrollToTopBtn.style.opacity = '0';
-        scrollToTopBtn.style.visibility = 'hidden';
-    }
-});
-
-scrollToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// ===== Theme Toggle (Light/Dark) =====
-function toggleTheme() {
-    const isDark = document.body.style.filter === 'invert(1)';
-    document.body.style.filter = isDark ? 'none' : 'invert(1)';
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-}
-
-// Check for saved theme preference
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    document.body.style.filter = 'invert(1)';
-}
-
-// ===== Console Easter Egg =====
-console.log('%c🍕 PizzaCode — Aula 1: Webhook Chatbot', 
-    'font-size: 20px; color: #d4521f; font-weight: bold;');
-console.log('%cBem-vindo ao projeto educacional!', 
-    'font-size: 14px; color: #2c3e50;');
-console.log('%cDica: Pressione "T" para ir ao topo e "B" para ir ao final!', 
-    'font-size: 12px; color: #666; font-style: italic;');
+// ===== Console Message =====
+console.log('%c📚 Livraria Saberes', 
+    'font-size: 20px; color: #d4af37; font-weight: bold;');
+console.log('%cConverse com Sophia, sua assistente de leitura!', 
+    'font-size: 14px; color: #8b7355;');
 console.log('%c' + '='.repeat(50), 'color: #ddd;');
