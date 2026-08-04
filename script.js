@@ -64,7 +64,7 @@ function initializeChat() {
         // Disable send button
         sendBtn.disabled = true;
         messageInput.disabled = true;
-        chatStatus.textContent = 'Sophia está digitando...';
+        chatStatus.textContent = 'Mandy está digitando...';
         chatStatus.className = '';
         
         // Show loading indicator
@@ -110,7 +110,7 @@ function initializeChat() {
             botDiv.innerHTML = `
                 <div class="message-avatar">📚</div>
                 <div class="message-content">
-                    <p><strong>Sophia:</strong> ${escapeHtml(text)}</p>
+                    <p><strong>Mandy:</strong> ${escapeHtml(text)}</p>
                 </div>
             `;
             chatMessages.appendChild(botDiv);
@@ -135,7 +135,7 @@ function initializeChat() {
             errorDiv.innerHTML = `
                 <div class="message-avatar">📚</div>
                 <div class="message-content">
-                    <p><strong>Sophia:</strong> Desculpe, tive um problema para responder. Pode tentar novamente?</p>
+                    <p><strong>Mandy:</strong> Ops! Tive um problema pra responder agora, mas não desista não! 😅 Tenta de novo?</p>
                 </div>
             `;
             chatMessages.appendChild(errorDiv);
@@ -166,6 +166,6 @@ function escapeHtml(text) {
 // ===== Console Message =====
 console.log('%c📚 Livraria Saberes', 
     'font-size: 20px; color: #d4af37; font-weight: bold;');
-console.log('%cConverse com Sophia, sua assistente de leitura!', 
+console.log('%c🎉 Converse com Mandy, sua assistente apaixonada por livros!', 
     'font-size: 14px; color: #8b7355;');
 console.log('%c' + '='.repeat(50), 'color: #ddd;');
