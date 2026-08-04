@@ -70,7 +70,104 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch and display info from pizza.json if available
     loadProjectInfo();
+    
+    // Initialize chat
+    initializeChat();
 });
+
+// ===== Chat Functionality =====
+function initializeChat() {
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatStatus = document.getElementById('chatStatus');
+    
+    if (!messageInput || !sendBtn) {
+        console.log('ℹ️ Chat não configurado na página');
+        return;
+    }
+    
+    // Send message on button click
+    sendBtn.addEventListener('click', () => {
+        const message = messageInput.value.trim();
+        if (message) {
+            sendMessage(message);
+            messageInput.value = '';
+        }
+    });
+    
+    // Send message on Enter key
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                sendMessage(message);
+                messageInput.value = '';
+            }
+        }
+    });
+    
+    async function sendMessage(message) {
+        // Show user message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'message user-message';
+        userDiv.textContent = message;
+        chatMessages.appendChild(userDiv);
+        
+        // Scroll to bottom
+        chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+        
+        // Disable send button
+        sendBtn.disabled = true;
+        chatStatus.textContent = CONFIG.LOADING_MESSAGE;
+        chatStatus.className = '';
+        
+        try {
+            // Send to webhook
+            const response = await fetch(CONFIG.WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mensagem: message }),
+                timeout: CONFIG.REQUEST_TIMEOUT
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}: ${response.statusText}`);
+            }
+            
+            const text = await response.text();
+            
+            // Show bot response
+            const botDiv = document.createElement('div');
+            botDiv.className = 'message system-message';
+            botDiv.innerHTML = `<p>${text}</p>`;
+            chatMessages.appendChild(botDiv);
+            
+            chatStatus.textContent = '✓ Mensagem entregue';
+            chatStatus.className = 'success';
+            
+        } catch (error) {
+            console.error('Erro ao enviar mensagem:', error);
+            
+            // Show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message system-message';
+            errorDiv.innerHTML = `<p>❌ ${CONFIG.ERROR_MESSAGE}</p>`;
+            chatMessages.appendChild(errorDiv);
+            
+            chatStatus.textContent = '✗ Erro ao enviar mensagem';
+            chatStatus.className = 'error';
+        } finally {
+            sendBtn.disabled = false;
+            // Scroll to bottom
+            chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+            messageInput.focus();
+        }
+    }
+}
 
 async function loadProjectInfo() {
     try {

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: hello-n8n
+    runtime: static
+    buildCommand: echo "Static site - no build needed"
+    staticPublishPath: .
+    routes:
+      - path: /
+        file: /index.html
+      - path: /:file
+        file: /:file
+      - path: /:dir/:file
+        file: /:dir/:file
+    headers:
+      - path: /
+        name: Cache-Control
+        value: "public, max-age=3600"
+      - path: /*
+        name: Cache-Control
+        value: "public, max-age=3600"
+      - path: /*.json
+        name: Cache-Control
+        value: "public, max-age=600"

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PizzaCode — Biblioteca da Comunidade</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
     <div class="container">
@@ -125,6 +126,33 @@
                     </div>
                 </section>
 
+                <!-- Chat Section -->
+                <section class="section chat-section">
+                    <h2 class="section-title">💬 Teste o Chatbot Agora</h2>
+                    <div class="chat-container">
+                        <div class="chat-box">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="message system-message">
+                                    <p>👋 Olá! Sou o Zeca, atendente do PizzaCode. Como posso ajudar?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input 
+                                type="text" 
+                                id="messageInput" 
+                                class="chat-input" 
+                                placeholder="Digite sua mensagem aqui..."
+                                maxlength="500"
+                            >
+                            <button id="sendBtn" class="chat-send-btn">
+                                Enviar
+                            </button>
+                        </div>
+                        <p class="chat-status" id="chatStatus"></p>
+                    </div>
+                </section>
+
                 <!-- Instructions -->
                 <section class="section instructions-section">
                     <h2 class="section-title">📋 Como Usar</h2>
@@ -136,9 +164,7 @@
                             <li>Configure sua chave da API Groq no nó "Chamar o LLM"</li>
                             <li>Ative o workflow (toggle no topo)</li>
                             <li>Copie a URL de produção do webhook</li>
-                            <li>Faça um teste:
-                                <code>curl -X POST &lt;sua-url&gt; -d '{"mensagem":"tem pizza vegana?"}'</code>
-                            </li>
+                            <li>Teste usando o chatbot acima! ☝️</li>
                         </ol>
                     </div>
                 </section>

@@ -1,0 +1,17 @@
+{
+  "name": "pizzacode-static",
+  "version": "1.0.0",
+  "description": "Página estática do PizzaCode com integração n8n",
+  "private": true,
+  "scripts": {
+    "start": "echo 'Static site - no server needed'"
+  },
+  "keywords": [
+    "pizzacode",
+    "n8n",
+    "webhook",
+    "chatbot"
+  ],
+  "author": "PizzaCode Community",
+  "license": "MIT"
+}
