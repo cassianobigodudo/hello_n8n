@@ -1,5 +1,20 @@
+// ===== Session Management =====
+let sessionId;
+
+function initializeSession() {
+    sessionId = localStorage.getItem('session_id');
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem('session_id', sessionId);
+        console.log('🆕 Novo session criado:', sessionId);
+    } else {
+        console.log('♻️ Session recuperado:', sessionId);
+    }
+}
+
 // ===== Initialize on DOM Load =====
 document.addEventListener('DOMContentLoaded', () => {
+    initializeSession();
     initializeChat();
 });
 
@@ -85,13 +100,16 @@ function initializeChat() {
         chatBox.scrollTop = chatBox.scrollHeight;
         
         try {
-            // Send to webhook
+            // Send to webhook with session_id
             const response = await fetch(CONFIG.WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ mensagem: message }),
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    mensagem: message
+                }),
                 timeout: CONFIG.REQUEST_TIMEOUT
             });
             
@@ -170,18 +188,4 @@ console.log('%c🎉 Converse com Mandy, sua assistente apaixonada por livros!',
     'font-size: 14px; color: #8b7355;');
 console.log('%c' + '='.repeat(50), 'color: #ddd;');
 
-let sessionId = localStorage.getItem('session_id');
-if (!sessionId) {
-  sessionId = crypto.randomUUID();
-  localStorage.setItem('session_id', sessionId);
-}
 
-// e envia em TODA requisição
-await fetch('https://cassianobigodudo.app.n8n.cloud/webhook/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    session_id: sessionId,
-    mensagem: textoDoUsuario
-  })
-});
